@@ -16,7 +16,11 @@ Requires a configuration file, currently hardcoded in
 
 For example,
 
-[default]
-sg-249857620984756 = us-west-1
+***
+
+    [default]
+    sg-249857620984756 = us-west-1
+
+***
 
 
