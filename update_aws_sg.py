@@ -1,3 +1,5 @@
+import sys
+
 import boto3
 from botocore.config import Config
 import argparse
@@ -34,11 +36,11 @@ class UpdateAwsSg:
 
         self.description = arguments.description
 
-        section = arguments.aws_profile
+        self.section = arguments.aws_profile
 
-        config = ConfigParser()
-        config.read(CONFIG_FILE)
-        self.security_groups = {security_group: region for security_group, region in config.items(section)}
+        self.config = ConfigParser()
+        self.config.read(CONFIG_FILE)
+        self.security_groups = {security_group: region for security_group, region in self.config.items(self.section)}
 
     def update_security_groups(self):
         for security_group, region in self.security_groups.items():
@@ -97,14 +99,36 @@ class UpdateAwsSg:
             ],
         )
 
+    def list_security_groups(self):
+        print(f"[{self.section}]")
+        for security_group, region in self.security_groups.items():
+            print(f"{security_group} = {region}")
+
+    def list_all_security_groups(self):
+        for section in self.config.sections():
+            print(f"[{section}]")
+            for security_group, region in self.config.items(section):
+                print(f"{security_group} = {region}")
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("-u", "--update", help="Update the security groups", action="store_true")
+    group.add_argument("-l", "--list", help="List the security groups for the current profile", action="store_true")
+    group.add_argument("--list-all", help="List all security groups for all profiles", action="store_true")
+    
     parser.add_argument('-a', '--aws-profile', default="default", help='AWS configuration profile')
     parser.add_argument('-d', '--description', default="Home", help='The location to update')
 
     args = parser.parse_args()
 
     update_aws_sg = UpdateAwsSg(args)
-    update_aws_sg.update_security_groups()
+    if args.list:
+        update_aws_sg.list_security_groups()
+    elif args.list_all:
+        update_aws_sg.list_all_security_groups()
+    else:
+        update_aws_sg.update_security_groups()
+
