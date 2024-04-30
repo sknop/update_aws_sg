@@ -1,5 +1,3 @@
-import sys
-
 import boto3
 from botocore.config import Config
 import argparse
