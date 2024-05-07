@@ -44,8 +44,15 @@ class UpdateAwsSg:
         for security_group, region in self.security_groups.items():
             self.logger.info(f"Updating security group {security_group} in region {region}")
 
+            session = boto3.Session(profile_name=self.section)
             config = Config(region_name=region)
-            client = boto3.client("ec2", config=config)
+            client = session.client("ec2", config=config)
+
+            # response = client.describe_security_groups()
+            #
+            # for r in response['SecurityGroups']:
+            #     print(f"{r['GroupName']},{r['GroupId']}")
+
             response = client.describe_security_groups(GroupIds=[security_group])
             ip_ranges = response['SecurityGroups'][0]['IpPermissions'][0]['IpRanges']
 
