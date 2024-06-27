@@ -8,7 +8,7 @@ import urllib.request
 from configparser import ConfigParser
 
 CONFIG_FILE = Path.home() / ".config" / "aws-sg" / "aws-sg.cfg"
-URL = "http://checkip.amazonaws.com"
+URL = "https://checkip.amazonaws.com"
 
 
 def myip():
@@ -136,4 +136,3 @@ if __name__ == '__main__':
         update_aws_sg.list_all_security_groups()
     else:
         update_aws_sg.update_security_groups()
-
